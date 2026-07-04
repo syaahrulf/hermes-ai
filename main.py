@@ -1,7 +1,20 @@
+
 import os
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, ContextTypes, filters
 from openai import OpenAI
+
+MODELS = [
+    "openai/gpt-4o-mini",
+    "openai/gpt-4o",
+    "anthropic/claude-3.5-sonnet",
+    "anthropic/claude-3-haiku",
+    "google/gemini-1.5-pro",
+    "google/gemini-1.5-flash",
+    "deepseek/deepseek-chat",
+    "qwen/qwen-2.5-72b-instruct",
+    "meta-llama/llama-3.1-70b-instruct"
+]
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
@@ -11,6 +24,9 @@ client = OpenAI(
     api_key=OPENROUTER_API_KEY
 )
 
+def pick_model():
+    return random.choice(MODELS)
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Hermes AI aktif 🤖")
 
@@ -18,7 +34,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text
 
     response = client.chat.completions.create(
-        model="openai/gpt-4o-mini",
+       model = pick_model(),
         messages=[
             {"role": "user", "content": user_text}
         ]
